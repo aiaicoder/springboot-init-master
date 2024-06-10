@@ -25,6 +25,12 @@ public class User implements Serializable {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
     /**
      * 用户账号
      */
@@ -74,6 +80,13 @@ public class User implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 1：男,0:女
+     */
+    private Integer sex;
+
+
 
     /**
      * 是否删除
