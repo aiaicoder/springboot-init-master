@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 帖子接口
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
@@ -104,33 +104,6 @@ public class PostController {
         return ResultUtils.success(b);
     }
 
-    /**
-     * 更新（仅管理员）
-     *
-     * @param postUpdateRequest
-     * @return
-     */
-    @PostMapping("/update")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updatePost(@RequestBody PostUpdateRequest postUpdateRequest) {
-        if (postUpdateRequest == null || postUpdateRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        Post post = new Post();
-        BeanUtils.copyProperties(postUpdateRequest, post);
-        List<String> tags = postUpdateRequest.getTags();
-        if (tags != null) {
-            post.setTags(JSONUtil.toJsonStr(tags));
-        }
-        // 参数校验
-        postService.validPost(post, false);
-        long id = postUpdateRequest.getId();
-        // 判断是否存在
-        Post oldPost = postService.getById(id);
-        ThrowUtils.throwIf(oldPost == null, ErrorCode.NOT_FOUND_ERROR);
-        boolean result = postService.updateById(post);
-        return ResultUtils.success(result);
-    }
 
     /**
      * 根据 id 获取
@@ -150,21 +123,7 @@ public class PostController {
         return ResultUtils.success(postService.getPostVO(post, request));
     }
 
-    /**
-     * 分页获取列表（仅管理员）
-     *
-     * @param postQueryRequest
-     * @return
-     */
-    @PostMapping("/list/page")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<Post>> listPostByPage(@RequestBody PostQueryRequest postQueryRequest) {
-        long current = postQueryRequest.getCurrent();
-        long size = postQueryRequest.getPageSize();
-        Page<Post> postPage = postService.page(new Page<>(current, size),
-                postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postPage);
-    }
+
 
     /**
      * 分页获取列表（封装类）

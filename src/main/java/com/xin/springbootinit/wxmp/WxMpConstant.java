@@ -3,7 +3,7 @@ package com.xin.springbootinit.wxmp;
 /**
  * 微信公众号相关常量
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  **/
 public class WxMpConstant {

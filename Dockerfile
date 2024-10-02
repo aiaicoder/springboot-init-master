@@ -1,5 +1,5 @@
 # Docker 镜像构建
-# @author <a href="https://github.com/liyupi">程序员小新</a>
+# @author <a href="https://github.com/aiaicoder">程序员小新</a>
 #
 FROM openjdk:8-jdk-alpine
 

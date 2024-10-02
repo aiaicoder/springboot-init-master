@@ -13,8 +13,11 @@ import com.xin.springbootinit.model.enums.FileUploadBizEnum;
 import com.xin.springbootinit.service.UserService;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import com.xin.springbootinit.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 文件接口
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
@@ -57,11 +60,13 @@ public class FileController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         validFile(multipartFile, fileUploadBizEnum);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser();
         // 文件目录：根据业务、用户来划分
         String uuid = RandomStringUtils.randomAlphanumeric(8);
         String filename = uuid + "-" + multipartFile.getOriginalFilename();
-        String filepath = String.format("/%s/%s/%s", fileUploadBizEnum.getValue(), loginUser.getId(), filename);
+        //格式化到月份
+        String uploadDate = DateUtils.format(new Date(System.currentTimeMillis()), DateUtils.YYYYMM);
+        String filepath = String.format("/%s/%s/%s/%s", fileUploadBizEnum.getValue(), loginUser.getId() , uploadDate , filename);
         File file = null;
         try {
             // 上传文件

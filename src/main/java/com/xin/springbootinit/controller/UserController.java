@@ -2,6 +2,7 @@ package com.xin.springbootinit.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xin.springbootinit.annotation.AuthCheck;
 import com.xin.springbootinit.common.BaseResponse;
@@ -23,11 +24,15 @@ import com.xin.springbootinit.model.vo.LoginUserVO;
 import com.xin.springbootinit.model.vo.UserVO;
 import com.xin.springbootinit.service.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.xin.springbootinit.utils.NetUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
@@ -47,7 +52,7 @@ import static com.xin.springbootinit.service.impl.UserServiceImpl.SALT;
 /**
  * 用户接口
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @RestController
@@ -105,6 +110,7 @@ public class UserController {
         return ResultUtils.success(loginUserVO);
     }
 
+
     /**
      * 用户登录（微信开放平台）
      */
@@ -127,6 +133,7 @@ public class UserController {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "登录失败，系统错误");
         }
     }
+
 
     /**
      * 用户注销
@@ -157,18 +164,6 @@ public class UserController {
     /**
      * 获取当前登录用户
      *
-     * @param request
-     * @return
-     */
-    public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
-        User user = userService.getLoginUser(request);
-        return ResultUtils.success(userService.getLoginUserVO(user));
-    }
-
-
-    /**
-     * 获取当前登录用户
-     *
      * @param
      * @return
      */
@@ -178,120 +173,6 @@ public class UserController {
         return ResultUtils.success(userService.getLoginUserVO(user));
     }
 
-    // endregion
-
-    // region 增删改查
-
-    /**
-     * 创建用户
-     *
-     * @param userAddRequest
-     * @return
-     */
-    @PostMapping("/add")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
-        if (userAddRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userAddRequest, user);
-        // 默认密码 12345678
-        String defaultPassword = "12345678";
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
-        user.setUserPassword(encryptPassword);
-        boolean result = userService.save(user);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(user.getId());
-    }
-
-    /**
-     * 删除用户
-     *
-     * @param deleteRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/delete")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
-        if (deleteRequest == null || deleteRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        boolean b = userService.removeById(deleteRequest.getId());
-        return ResultUtils.success(b);
-    }
-
-    /**
-     * 更新用户
-     *
-     * @param userUpdateRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/update")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-                                            HttpServletRequest request) {
-        if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateRequest, user);
-        boolean result = userService.updateById(user);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(true);
-    }
-
-    /**
-     * 根据 id 获取用户（仅管理员）
-     *
-     * @param id
-     * @param request
-     * @return
-     */
-    @GetMapping("/get")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<User> getUserById(long id, HttpServletRequest request) {
-        if (id <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = userService.getById(id);
-        ThrowUtils.throwIf(user == null, ErrorCode.NOT_FOUND_ERROR);
-        return ResultUtils.success(user);
-    }
-
-    /**
-     * 根据 id 获取包装类
-     *
-     * @param id
-     * @param request
-     * @return
-     */
-    @GetMapping("/get/vo")
-    public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
-        BaseResponse<User> response = getUserById(id, request);
-        User user = response.getData();
-        return ResultUtils.success(userService.getUserVO(user));
-    }
-
-    /**
-     * 分页获取用户列表（仅管理员）
-     *
-     * @param userQueryRequest
-     * @param request
-     * @return
-     */
-    @PostMapping("/list/page")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
-                                                   HttpServletRequest request) {
-        long current = userQueryRequest.getCurrent();
-        long size = userQueryRequest.getPageSize();
-        Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
-        return ResultUtils.success(userPage);
-    }
 
     /**
      * 分页获取用户封装列表
@@ -316,7 +197,6 @@ public class UserController {
         return ResultUtils.success(userVOPage);
     }
 
-    // endregion
 
     /**
      * 更新个人信息

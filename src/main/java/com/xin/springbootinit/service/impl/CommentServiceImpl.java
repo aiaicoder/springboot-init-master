@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 帖子收藏服务实现
  *
- * @author <a href="https://github.com/liyupi">程序员小新</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  */
 @Service
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 帖子接口
  *
- * @author <a href="https://github.com/liyupi">程序员小新</a>
+ * @author <a href="https://github.com/aiaicoder">程序员小新</a>
  */
 @RestController
 @RequestMapping("/question_comment")
