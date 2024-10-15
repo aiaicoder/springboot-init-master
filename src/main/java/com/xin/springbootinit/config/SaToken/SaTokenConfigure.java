@@ -1,4 +1,4 @@
-package com.xin.springbootinit.config;
+package com.xin.springbootinit.config.SaToken;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import org.springframework.context.annotation.Configuration;

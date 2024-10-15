@@ -1,4 +1,4 @@
-package com.xin.springbootinit.config;
+package com.xin.springbootinit.config.SaToken;
 
 import java.util.ArrayList;
 import java.util.List;

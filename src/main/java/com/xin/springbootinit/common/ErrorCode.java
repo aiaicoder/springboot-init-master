@@ -16,7 +16,6 @@ public enum ErrorCode {
     FORBIDDEN_ERROR(40300, "禁止访问"),
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
-    MAX_GROUP_COUNT_ERROR(50002,"群聊人数已满"),
 
     INVALID_TOKEN_ERROR(401002,"登录失效"),
 

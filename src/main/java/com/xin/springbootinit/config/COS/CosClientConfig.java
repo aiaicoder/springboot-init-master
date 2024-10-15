@@ -1,4 +1,4 @@
-package com.xin.springbootinit.config;
+package com.xin.springbootinit.config.COS;
 
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;

@@ -3,7 +3,7 @@ package com.xin.springbootinit.manager;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
-import com.xin.springbootinit.config.CosClientConfig;
+import com.xin.springbootinit.config.COS.CosClientConfig;
 import java.io.File;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;

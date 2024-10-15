@@ -1,4 +1,4 @@
-package com.xin.springbootinit.config;
+package com.xin.springbootinit.config.Mp;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.cache.CacheKey;
